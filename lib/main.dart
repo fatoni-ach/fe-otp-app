@@ -17,7 +17,7 @@ import 'ui/page/login.dart';
 import 'controllers/auth_controller.dart';
 
 void main() async {
-  await dotenv.load(fileName: '../.env');
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 
