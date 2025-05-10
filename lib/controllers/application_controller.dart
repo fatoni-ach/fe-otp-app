@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/auth_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
@@ -18,6 +20,7 @@ class ApplicationController extends GetxController {
     super.onInit();
     getListApplication();
     // getPersonalApplication();
+    startAutoRefresh();
   }
 
   Future<void> reloadData() async {
@@ -103,5 +106,25 @@ class ApplicationController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  // var data = "Menunggu refresh...".obs;
+  var currentSecond = 0.obs;
+  late Timer timer;
+
+  void startAutoRefresh() {
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      final now = DateTime.now();
+      currentSecond.value = now.second;
+      if (now.second == 0 || now.second == 30) {
+        reloadPersonalData();
+      }
+    });
+  }
+
+  @override
+  void onClose() {
+    timer.cancel();
+    super.onClose();
   }
 }

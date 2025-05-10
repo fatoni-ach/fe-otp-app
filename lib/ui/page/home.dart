@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import '../partials/custom_sidebar.dart';
@@ -22,7 +25,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('OTP APP')),
+      appBar: AppBar(
+        title: const Text('OTP APP'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              appController.reloadPersonalData();
+            },
+          ),
+        ],
+      ),
       drawer: const CustomSidebar(),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
@@ -37,6 +50,9 @@ class _HomePageState extends State<HomePage> {
         if (appController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
+        int base = appController.currentSecond.value;
+        double progress =
+            (base < 30) ? base / 30 : (base - 30) / 29; // prevent div by zero
         return RefreshIndicator(
           onRefresh: () async {
             await appController.reloadPersonalData();
@@ -61,6 +77,27 @@ class _HomePageState extends State<HomePage> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    TweenAnimationBuilder<double>(
+                      tween: Tween<double>(begin: 0, end: progress),
+                      duration: Duration(milliseconds: 500),
+                      builder: (context, value, _) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                value: value,
+                                strokeWidth: 5,
+                                backgroundColor: Colors.grey[300],
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
