@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/middleware/auth_middleware.dart';
-import 'package:flutter_first_app/models/user.dart';
+// import 'package:flutter_first_app/models/user.dart';
 import 'package:flutter_first_app/ui/page/application/create.dart';
 import 'package:flutter_first_app/ui/page/application/index.dart';
 import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
 import 'package:flutter_first_app/ui/page/user/create.dart';
 import 'package:flutter_first_app/ui/page/user/detail.dart';
 import 'package:flutter_first_app/ui/page/user/edit.dart';
-import 'controllers/user_controller.dart';
 import 'package:get/get.dart';
-import 'package:flutter_first_app/ui/partials/custom_sidebar.dart';
 import 'ui/page/home.dart';
 import 'ui/page/profile.dart';
 import 'ui/page/login.dart';

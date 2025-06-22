@@ -1,10 +1,16 @@
-import 'dart:async';
-import 'dart:developer';
+// import 'dart:async';
+// import 'dart:developer';
+
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
+import 'package:flutter_first_app/controllers/qr_controller.dart';
+import 'package:flutter_first_app/ui/page/qr.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../partials/custom_sidebar.dart';
 import 'package:get/get.dart';
+// import 'package:file_picker/file_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ApplicationController appController = Get.put(ApplicationController());
+  final QRController controller = Get.put(QRController());
 
   @override
   void initState() {
@@ -22,8 +29,34 @@ class _HomePageState extends State<HomePage> {
     appController.getPersonalApplication();
   }
 
+  // Future<void> pickImageAndScan() async {
+  //   final result = await FilePicker.platform.pickFiles(type: FileType.image);
+  //   if (result != null && result.files.single.path != null) {
+  //     final file = File(result.files.single.path!);
+  //     controller.scanFromFile(file);
+  //     Get.snackbar("Qr Code : ", controller.qrResult.value);
+  //   }
+  // }
+
+  Future<void> pickFromCamera() async {
+    var status = await Permission.camera.request();
+    if (status.isGranted) {
+      await Get.to(() => QRViewPage());
+      // Get.to(() => QRViewPage());
+      // if (result != null && result is String) {
+      appController
+          .reloadPersonalData(); // Bisa juga pakai fetch ulang API, dll.
+      // }
+    } else {
+      Get.snackbar("Izin Dibutuhkan", "Akses kamera ditolak.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (controller.qrResult.value.isNotEmpty) {
+      Get.snackbar("qr code ", controller.qrResult.value);
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('OTP APP'),
@@ -37,15 +70,11 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       drawer: const CustomSidebar(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     // Aksi saat tombol ditekan
-      //     // Get.snackbar('FAB Pressed', 'Kamu menekan tombol tambah!');
-      //     Get.toNamed('/admin/applications/create');
-      //   },
-      //   child: Icon(Icons.add),
-      //   // tooltip: '',
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: pickFromCamera,
+        child: Icon(Icons.qr_code_scanner),
+      ),
+
       body: Obx(() {
         if (appController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -132,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                                       );
                                     }
                                     Navigator.of(context).pop();
-                                    appController.reloadData();
+                                    appController.reloadPersonalData();
                                   },
                                 ),
                               ],
@@ -224,5 +253,12 @@ class _HomePageState extends State<HomePage> {
         // return;
       }),
     );
+  }
+
+  @override
+  void dispose() {
+    appController.dispose();
+    controller.dispose();
+    super.dispose();
   }
 }

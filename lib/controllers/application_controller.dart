@@ -90,6 +90,25 @@ class ApplicationController extends GetxController {
     }
   }
 
+  Future<void> storeMyTOTP(String name, issuer, secret) async {
+    try {
+      isLoading(true);
+      var response = await http.post(
+        Uri.parse('$otpBaseUri/v1/applications-detail'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${authController.token.value}',
+        },
+        body: json.encode({'name': name, 'issuer': issuer, 'secret': secret}),
+      );
+      if (response.statusCode != 200) {
+        Get.snackbar('Error', 'Failed to Save TOTP');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
   Future<void> destroy(int id) async {
     try {
       isLoading(true);
