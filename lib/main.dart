@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/middleware/auth_middleware.dart';
 // import 'package:flutter_first_app/models/user.dart';
 import 'package:flutter_first_app/ui/page/application/create.dart';
 import 'package:flutter_first_app/ui/page/application/index.dart';
+import 'package:flutter_first_app/ui/page/client/ListClientPage.dart';
+import 'package:flutter_first_app/ui/page/client/create.dart';
+import 'package:flutter_first_app/ui/page/client/edit.dart';
 import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
 import 'package:flutter_first_app/ui/page/user/create.dart';
 import 'package:flutter_first_app/ui/page/user/detail.dart';
@@ -97,6 +99,21 @@ class _MyHomePageState extends State<MyHomePage> {
         GetPage(
           name: '/admin/applications/create',
           page: () => CreateApplicationPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/admin/clients',
+          page: () => ListClientPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/admin/clients/create',
+          page: () => CreateClientPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/admin/clients/edit',
+          page: () => EditClientPage(),
           middlewares: [AuthMiddleware()],
         ),
       ],

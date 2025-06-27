@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_first_app/ui/page/application/index.dart';
 import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
 // import '../page/profile.dart';
 import '../page/home.dart';
@@ -58,14 +57,8 @@ class CustomSidebar extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {
-              Navigator.pop(context); // Tutup Drawer dulu
-
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (route) => false, // Ini penting: hapus semua halaman sebelumnya
-              );
               await authController.logout(); // Logout
+              Get.offAll(LoginPage());
             },
           ),
           const Divider(),
@@ -84,11 +77,16 @@ class CustomSidebar extends StatelessWidget {
             leading: const Icon(Icons.list),
             title: const Text('Daftar Aplikasi'),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ListApplicationPage()),
-              );
+              Get.back();
+              Get.toNamed("/admin/applications");
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.list),
+            title: const Text('Daftar Client'),
+            onTap: () {
+              Get.back();
+              Get.toNamed("/admin/clients");
             },
           ),
         ],
