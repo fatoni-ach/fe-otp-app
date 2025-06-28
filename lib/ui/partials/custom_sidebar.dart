@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
-// import '../page/profile.dart';
-import '../page/home.dart';
 import '../page/login.dart';
 import '../../controllers/auth_controller.dart';
 import 'package:get/get.dart';
@@ -17,42 +14,29 @@ class CustomSidebar extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text(
-              'OTP App',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+          const SizedBox(
+            height: 100,
+            child: DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
+                'Authenticator App',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
             ),
           ),
+          ListTile(
+            contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+            title: const Text('My Account'),
+          ),
+          const Divider(height: 0),
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
-              Navigator.pop(context); // Tutup Drawer dulu
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
+              Get.back();
+              Get.toNamed("/");
             },
           ),
-          // ListTile(
-          //   leading: const Icon(Icons.person),
-          //   title: const Text('Profile'),
-          //   onTap: () {
-          //     Navigator.pop(context); // Tutup Drawer dulu
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => const ProfilePage()),
-          //     );
-          //   },
-          // ),
-          // ListTile(
-          //   leading: const Icon(Icons.settings),
-          //   title: const Text('Settings'),
-          //   onTap: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
@@ -61,16 +45,20 @@ class CustomSidebar extends StatelessWidget {
               Get.offAll(LoginPage());
             },
           ),
-          const Divider(),
+
+          const Divider(color: Colors.transparent, height: 20),
+          ListTile(
+            contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+            title: const Text('Master Data'),
+          ),
+          const Divider(height: 0),
+
           ListTile(
             leading: const Icon(Icons.list),
             title: const Text('Daftar User'),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ListUsersPage()),
-              );
+              Get.back();
+              Get.toNamed("/admin/users");
             },
           ),
           ListTile(
