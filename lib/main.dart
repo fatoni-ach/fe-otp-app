@@ -7,6 +7,9 @@ import 'package:flutter_first_app/ui/page/application/index.dart';
 import 'package:flutter_first_app/ui/page/client/ListClientPage.dart';
 import 'package:flutter_first_app/ui/page/client/create.dart';
 import 'package:flutter_first_app/ui/page/client/edit.dart';
+import 'package:flutter_first_app/ui/page/mykeys/create.dart';
+import 'package:flutter_first_app/ui/page/mykeys/edit.dart';
+import 'package:flutter_first_app/ui/page/mykeys/index.dart';
 import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
 import 'package:flutter_first_app/ui/page/user/create.dart';
 import 'package:flutter_first_app/ui/page/user/detail.dart';
@@ -114,6 +117,21 @@ class _MyHomePageState extends State<MyHomePage> {
         GetPage(
           name: '/admin/clients/edit',
           page: () => EditClientPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/my/keys',
+          page: () => ListMyKeysPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/my/keys/create',
+          page: () => CreateMyKeysPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/my/keys/edit',
+          page: () => EditMyKeysPage(),
           middlewares: [AuthMiddleware()],
         ),
       ],

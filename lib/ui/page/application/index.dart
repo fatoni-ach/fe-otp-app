@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
+import 'package:flutter_first_app/controllers/cache_controller.dart';
 import '../../partials/custom_sidebar.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +13,13 @@ class ListApplicationPage extends StatefulWidget {
 
 class _ListApplicationPageState extends State<ListApplicationPage> {
   final ApplicationController appController = Get.put(ApplicationController());
+  final CacheController cacheController = Get.put(CacheController());
+
+  @override
+  void initState() {
+    cacheController.loadUserList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

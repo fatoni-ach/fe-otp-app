@@ -38,6 +38,14 @@ class CustomSidebar extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.key),
+            title: const Text('My Keys'),
+            onTap: () {
+              Get.back();
+              Get.toNamed("/my/keys");
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {

@@ -1,41 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_first_app/controllers/client_controller.dart';
 import '../../partials/custom_sidebar.dart';
 import 'package:get/get.dart';
 
-class ListClientPage extends StatefulWidget {
-  const ListClientPage({super.key});
+class ListMyKeysPage extends StatefulWidget {
+  const ListMyKeysPage({super.key});
 
   @override
-  State<ListClientPage> createState() => _ListClientPageState();
+  State<ListMyKeysPage> createState() => _ListMyKeysPageState();
 }
 
-class _ListClientPageState extends State<ListClientPage> {
-  // final ClientController clientController = Get.find<ClientController>();
+class _ListMyKeysPageState extends State<ListMyKeysPage> {
   final ClientController clientController = Get.put(ClientController());
 
   @override
   void initState() {
     super.initState();
-    clientController.getListClient();
+    clientController.getMyKeys();
   }
 
   @override
   void dispose() {
-    clientController.dispose();
     super.dispose();
+    clientController.dispose();
+  }
+
+  void _copyText(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Teks berhasil disalin!')));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Client'),
+        title: const Text('My Keys'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              clientController.getListClient();
+              clientController.getMyKeys();
             },
           ),
         ],
@@ -43,7 +50,7 @@ class _ListClientPageState extends State<ListClientPage> {
       drawer: const CustomSidebar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed('/admin/clients/create');
+          Get.toNamed('/my/keys/create');
         },
         child: Icon(Icons.add),
       ),
@@ -65,9 +72,14 @@ class _ListClientPageState extends State<ListClientPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
+                    icon: Icon(Icons.copy, color: Colors.grey),
+                    onPressed: () => _copyText(context, client.key),
+                  ),
+
+                  IconButton(
                     icon: Icon(Icons.edit, color: Colors.grey),
                     onPressed: () {
-                      Get.toNamed('/admin/clients/edit', arguments: client.id);
+                      Get.toNamed('/my/keys/edit', arguments: client.id);
                     },
                   ),
 
@@ -105,7 +117,7 @@ class _ListClientPageState extends State<ListClientPage> {
                                     );
                                   }
                                   Navigator.of(context).pop();
-                                  clientController.getListClient();
+                                  await clientController.getMyKeys();
                                 },
                               ),
                             ],

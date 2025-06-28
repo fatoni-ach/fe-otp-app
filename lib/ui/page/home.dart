@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OTP APP'),
+        title: const Text('My OTP'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

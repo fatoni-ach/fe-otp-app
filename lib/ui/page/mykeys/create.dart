@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_first_app/controllers/client_controller.dart';
 import 'package:get/get.dart';
 
-class CreateClientPage extends StatelessWidget {
+class CreateMyKeysPage extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final ValueNotifier<bool> _activeNotifier = ValueNotifier<bool>(false);
   final ClientController clientController = Get.find<ClientController>();
 
-  CreateClientPage({super.key});
+  CreateMyKeysPage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text('Create Data')),
+    appBar: AppBar(title: Text('Tambahkan Key')),
     body: Obx(() {
       if (clientController.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
@@ -51,11 +51,11 @@ class CreateClientPage extends StatelessWidget {
                   try {
                     await clientController.store(name, active);
                     Get.back();
-                    Get.toNamed('/admin/clients', preventDuplicates: true);
+                    Get.toNamed('/my/keys', preventDuplicates: true);
                     Get.snackbar('Sukses', 'Data "$name" disimpan');
-                    clientController.getListClient();
+                    clientController.getMyKeys();
                   } catch (e) {
-                    Get.snackbar('Error', 'Failed Store Client');
+                    Get.snackbar('Error', 'Failed Store Keys');
                   }
                 } else {
                   Get.snackbar('Error', 'Nama tidak boleh kosong');

@@ -55,12 +55,12 @@ class ApplicationController extends GetxController {
     try {
       isLoading(true);
       var response = await http.get(
-        Uri.parse('$otpBaseUri/v1/applications-detail?limit=100'),
+        Uri.parse('$otpBaseUri/v1/my/totp?limit=100'),
         headers: {'Authorization': 'Bearer ${authController.token.value}'},
       );
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        var listAppData = data['data']['rows'] as List;
+        var listAppData = data['data'] as List;
         listApp.value =
             listAppData.map((e) => Application.fromJson(e)).toList();
       } else {
@@ -94,7 +94,7 @@ class ApplicationController extends GetxController {
     try {
       isLoading(true);
       var response = await http.post(
-        Uri.parse('$otpBaseUri/v1/applications-detail'),
+        Uri.parse('$otpBaseUri/v1/my/totp'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${authController.token.value}',
