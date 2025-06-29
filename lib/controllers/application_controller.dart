@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/auth_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
+import 'package:flutter_first_app/ui/page/login.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -18,9 +19,9 @@ class ApplicationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getListApplication();
-    // getPersonalApplication();
-    startAutoRefresh();
+    // getListApplication();
+    getPersonalApplication();
+    // startAutoRefresh();
   }
 
   Future<void> reloadData() async {
@@ -51,7 +52,7 @@ class ApplicationController extends GetxController {
     }
   }
 
-  void getPersonalApplication() async {
+  Future<void> getPersonalApplication() async {
     try {
       isLoading(true);
       var response = await http.get(
@@ -63,6 +64,9 @@ class ApplicationController extends GetxController {
         var listAppData = data['data'] as List;
         listApp.value =
             listAppData.map((e) => Application.fromJson(e)).toList();
+      } else if (response.statusCode == 401) {
+        authController.logout();
+        Get.offAll(LoginPage());
       } else {
         Get.snackbar('Error', 'Failed to load applications');
       }

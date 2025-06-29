@@ -3,16 +3,16 @@ import 'dart:convert';
 class Application {
   final int id;
   final String name;
-  final String kodeOtp;
+  String kodeOtp;
   final String issuer;
-  final String secret;
+  final String secretKey;
 
   Application({
     required this.id,
     required this.name,
     required this.kodeOtp,
     required this.issuer,
-    required this.secret,
+    required this.secretKey,
   });
 
   factory Application.fromJson(Map<String, dynamic> json) {
@@ -21,7 +21,7 @@ class Application {
       name: json['name'] ?? '',
       kodeOtp: json['kode_otp'] ?? '',
       issuer: json['issuer'] ?? '',
-      secret: json['secret'] ?? '',
+      secretKey: json['secret_key'] ?? '',
     );
   }
 
@@ -31,7 +31,7 @@ class Application {
       'name': name,
       'kode_otp': kodeOtp,
       'issuer': issuer,
-      'secret': secret,
+      'secret_key': secretKey,
     };
   }
 }

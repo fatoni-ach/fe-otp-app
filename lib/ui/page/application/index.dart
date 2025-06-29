@@ -17,7 +17,7 @@ class _ListApplicationPageState extends State<ListApplicationPage> {
 
   @override
   void initState() {
-    cacheController.loadUserList();
+    cacheController.loadAppList();
     super.initState();
   }
 
