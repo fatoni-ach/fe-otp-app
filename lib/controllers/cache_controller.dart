@@ -36,14 +36,14 @@ class CacheController extends GetxController {
     final apps = decodeApplicationList(jsonString);
 
     List<Application> listTemp;
-    if (apps.isEmpty) {
-      await appController.getPersonalApplication();
-      listTemp = appController.listApp.value;
+    // if (apps.isEmpty) {
+    // await appController.getPersonalApplication();
+    // listTemp = appController.listApp.value;
 
-      saveAppList(listTemp);
-    } else {
-      listTemp = apps;
-    }
+    // saveAppList(listTemp);
+    // } else {
+    listTemp = apps;
+    // }
 
     for (var i = 0; i < listTemp.length; i++) {
       listTemp[i].kodeOtp = _generateKodeOtp(listTemp[i].secretKey);

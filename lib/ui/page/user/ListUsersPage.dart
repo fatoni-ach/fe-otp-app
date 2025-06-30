@@ -11,7 +11,7 @@ class ListUsersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('OTP APP')),
-      drawer: const CustomSidebar(),
+      drawer: CustomSidebar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.toNamed('/admin/users/create');

@@ -47,7 +47,7 @@ class _ListMyKeysPageState extends State<ListMyKeysPage> {
           ),
         ],
       ),
-      drawer: const CustomSidebar(),
+      drawer: CustomSidebar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.toNamed('/my/keys/create');

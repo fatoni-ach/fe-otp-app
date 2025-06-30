@@ -40,7 +40,7 @@ class _ListClientPageState extends State<ListClientPage> {
           ),
         ],
       ),
-      drawer: const CustomSidebar(),
+      drawer: CustomSidebar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.toNamed('/admin/clients/create');

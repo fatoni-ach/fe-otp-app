@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_first_app/ui/page/home.dart';
 import '../page/login.dart';
 import '../../controllers/auth_controller.dart';
 import 'package:get/get.dart';
 
 class CustomSidebar extends StatelessWidget {
-  const CustomSidebar({super.key});
+  CustomSidebar({super.key});
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.find<AuthController>();
-
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -37,56 +37,78 @@ class CustomSidebar extends StatelessWidget {
               Get.toNamed("/");
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.key),
-            title: const Text('My Keys'),
-            onTap: () {
-              Get.back();
-              Get.toNamed("/my/keys");
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () async {
-              await authController.logout(); // Logout
-              Get.offAll(LoginPage());
-            },
-          ),
-
-          const Divider(color: Colors.transparent, height: 20),
-          ListTile(
-            contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-            title: const Text('Master Data'),
-          ),
-          const Divider(height: 0),
-
-          ListTile(
-            leading: const Icon(Icons.list),
-            title: const Text('Daftar User'),
-            onTap: () {
-              Get.back();
-              Get.toNamed("/admin/users");
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.list),
-            title: const Text('Daftar Aplikasi'),
-            onTap: () {
-              Get.back();
-              Get.toNamed("/admin/applications");
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.list),
-            title: const Text('Daftar Client'),
-            onTap: () {
-              Get.back();
-              Get.toNamed("/admin/clients");
-            },
-          ),
+          (authController.isLoggedIn.value) ? _isLoggin() : _isNotLogin(),
         ],
       ),
+    );
+  }
+
+  Widget _isLoggin() {
+    return Column(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.key),
+          title: const Text('My Keys'),
+          onTap: () {
+            Get.back();
+            Get.toNamed("/my/keys");
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout),
+          title: const Text('Logout'),
+          onTap: () async {
+            await authController.logout(); // Logout
+            Get.offAll(HomePage());
+          },
+        ),
+
+        const Divider(color: Colors.transparent, height: 20),
+        ListTile(
+          contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+          title: const Text('Master Data'),
+        ),
+        const Divider(height: 0),
+
+        ListTile(
+          leading: const Icon(Icons.list),
+          title: const Text('Daftar User'),
+          onTap: () {
+            Get.back();
+            Get.toNamed("/admin/users");
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.list),
+          title: const Text('Daftar Aplikasi'),
+          onTap: () {
+            Get.back();
+            Get.toNamed("/admin/applications");
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.list),
+          title: const Text('Daftar Client'),
+          onTap: () {
+            Get.back();
+            Get.toNamed("/admin/clients");
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _isNotLogin() {
+    return Column(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.login),
+          title: const Text('Login'),
+          onTap: () {
+            Get.toNamed("/login");
+          },
+        ),
+      ],
     );
   }
 }

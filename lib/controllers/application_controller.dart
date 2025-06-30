@@ -20,7 +20,7 @@ class ApplicationController extends GetxController {
   void onInit() {
     super.onInit();
     // getListApplication();
-    getPersonalApplication();
+    // getPersonalApplication();
     // startAutoRefresh();
   }
 

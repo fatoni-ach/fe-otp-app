@@ -8,7 +8,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('OTP APP')),
-      drawer: const CustomSidebar(),
+      drawer: CustomSidebar(),
       body: const Center(child: Text('Ini Adalah Halaman Profile')),
     );
   }

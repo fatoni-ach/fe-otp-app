@@ -25,7 +25,7 @@ class _ListApplicationPageState extends State<ListApplicationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('OTP APP')),
-      drawer: const CustomSidebar(),
+      drawer: CustomSidebar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Aksi saat tombol ditekan

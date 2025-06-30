@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/qr_controller.dart';
@@ -50,6 +51,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _copyText(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Teks berhasil disalin!')));
+  }
+
   @override
   Widget build(BuildContext context) {
     if (qrController.qrResult.value.isNotEmpty) {
@@ -67,7 +75,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      drawer: const CustomSidebar(),
+      drawer: CustomSidebar(),
       floatingActionButton: FloatingActionButton(
         onPressed: pickFromCamera,
         child: Icon(Icons.qr_code_scanner),
@@ -104,6 +112,11 @@ class _HomePageState extends State<HomePage> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    IconButton(
+                      icon: Icon(Icons.copy, color: Colors.grey),
+                      onPressed: () => _copyText(context, app.kodeOtp),
+                    ),
+                    SizedBox(width: 10),
                     TweenAnimationBuilder<double>(
                       tween: Tween<double>(begin: 0, end: progress),
                       duration: Duration(milliseconds: 500),
@@ -117,8 +130,8 @@ class _HomePageState extends State<HomePage> {
                               child: CircularProgressIndicator(
                                 value: value,
                                 strokeWidth: 5,
-                                backgroundColor: Colors.grey[300],
-                                color: Colors.blue,
+                                backgroundColor: Colors.blue,
+                                color: Colors.grey[300],
                               ),
                             ),
                           ],

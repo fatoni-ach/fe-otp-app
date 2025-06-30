@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'OTP App',
+      title: 'Authenticator App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -57,20 +57,21 @@ class _MyHomePageState extends State<MyHomePage> {
     return GetMaterialApp(
       title: 'OTP App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: Obx(() {
-        // Cek status login dan arahkan ke halaman yang sesuai
-        if (authController.isLoggedIn.value) {
-          return const HomePage();
-        } else {
-          return const LoginPage();
-        }
-      }), // ⬅️ Awal masuk ke LoginPage dulu
+      home: HomePage(),
+      // home: Obx(() {
+      //   // Cek status login dan arahkan ke halaman yang sesuai
+      //   if (authController.isLoggedIn.value) {
+      //     return const HomePage();
+      //   } else {
+      //     return const LoginPage();
+      //   }
+      // }), // ⬅️ Awal masuk ke LoginPage dulu
       initialRoute: '/',
       getPages: [
         GetPage(
           name: '/',
           page: () => HomePage(),
-          middlewares: [AuthMiddleware()],
+          // middlewares: [AuthMiddleware()],
         ),
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/profile', page: () => ProfilePage()),
