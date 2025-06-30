@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
+import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/qr_controller.dart';
 // import 'package:flutter_first_app/controllers/qr_controller.dart';
 // import 'package:flutter_zxing/flutter_zxing.dart';
@@ -18,24 +19,14 @@ class QRViewPage extends StatefulWidget {
 class _QRViewPageState extends State<QRViewPage> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrController;
-  final ApplicationController applicationController =
-      Get.find<ApplicationController>();
+  // final ApplicationController applicationController =
+  //     Get.find<ApplicationController>();
+
+  final CacheController cacheController = Get.find<CacheController>();
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   body: QRView(
-    //     key: qrKey,
-    //     onQRViewCreated: _onQRViewCreated,
-    //     overlay: QrScannerOverlayShape(
-    //       borderColor: Colors.green,
-    //       borderRadius: 10,
-    //       borderLength: 30,
-    //       borderWidth: 10,
-    //       cutOutSize: 250,
-    //     ),
-    //   ),
-    // );
     return Scaffold(
       body: QRView(
         key: qrKey,
@@ -45,7 +36,6 @@ class _QRViewPageState extends State<QRViewPage> {
           borderRadius: 10,
           borderLength: 30,
           borderWidth: 10,
-          // cutOutSize: scanArea,
         ),
         onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
       ),
@@ -63,45 +53,43 @@ class _QRViewPageState extends State<QRViewPage> {
 
   void _onQRViewCreated(QRViewController controller) {
     // this.qrController = controller;
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
       Get.find<QRController>().qrResult.value = scanData.code ?? '';
-      controller.dispose();
       String url = scanData.code ?? '';
+      count++;
+
+      controller.dispose();
 
       Uri uri = Uri.parse(url);
 
-      var secret = uri.queryParameters['secret'];
+      var secretKey = uri.queryParameters['secret'];
       var issuer = uri.queryParameters['issuer'];
       var name = uri.pathSegments[0];
 
-      if (secret == '' || issuer == '' || name == '') {
+      if (secretKey == '' || issuer == '' || name == '') {
         Get.back();
         Get.toNamed("/");
 
         Get.snackbar("ERROR", "QR CODE IS INVALID");
         return;
       }
+      // await controller.pauseCamera();
 
-      applicationController.storeMyTOTP(name, issuer, secret);
-      applicationController.reloadPersonalData();
+      if (count <= 1) {
+        await cacheController.addApp(name, issuer, secretKey);
+        await cacheController.loadAppList();
+      }
+      // applicationController.storeMyTOTP(name, issuer, secret);
+      // applicationController.reloadPersonalData();
 
-      // print("SECRET : $secret");
-      // print("ISSUER : $issuer");
-      // print("EMAIL : $email");
-      // print("QR CODE : ${scanData.code}");
-      // Get.snackbar("success", scanData.code ?? "");
-      // controller.pauseCamera();
-      // Get.back(result: "success");
       Get.back();
-      // Get.back();
-      // Get.toNamed("/");
     });
   }
 
   @override
   void dispose() {
-    qrController?.dispose();
-    applicationController.dispose();
+    // applicationController.dispose();
     super.dispose();
+    cacheController.dispose();
   }
 }

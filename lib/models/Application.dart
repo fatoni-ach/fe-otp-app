@@ -36,7 +36,7 @@ class Application {
   }
 }
 
-List<Application> decodeUserList(String jsonString) {
+List<Application> decodeApplicationList(String jsonString) {
   final List<dynamic> jsonList = jsonDecode(jsonString);
   return jsonList.map((json) => Application.fromJson(json)).toList();
 }

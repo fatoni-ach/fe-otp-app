@@ -33,14 +33,13 @@ class CacheController extends GetxController {
   Future<void> loadAppList() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString('application_list') ?? '[]';
-    final apps = decodeUserList(jsonString);
+    final apps = decodeApplicationList(jsonString);
 
     List<Application> listTemp;
     if (apps.isEmpty) {
       await appController.getPersonalApplication();
       listTemp = appController.listApp.value;
 
-      // listApp.value = listTemp;
       saveAppList(listTemp);
     } else {
       listTemp = apps;
@@ -52,7 +51,7 @@ class CacheController extends GetxController {
     listApp.value = listTemp;
   }
 
-  void addUser(String name, issuer, secretKey) async {
+  Future<void> addApp(String name, issuer, secretKey) async {
     final newUser = Application(
       id: 0,
       name: name,
@@ -70,7 +69,18 @@ class CacheController extends GetxController {
 
     listApp.value = newList;
     await saveAppList(newList);
-    await loadAppList();
+  }
+
+  Future<void> removeAppByIndex(int index) async {
+    final temp = listApp.value;
+
+    if (temp.isEmpty) {
+      return;
+    }
+
+    temp.removeAt(index);
+
+    await saveAppList(temp);
   }
 
   String _generateKodeOtp(String secretKey) {

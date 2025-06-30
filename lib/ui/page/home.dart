@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   final ApplicationController appController = Get.put(ApplicationController());
   final CacheController cacheController = Get.put(CacheController());
 
-  final QRController controller = Get.put(QRController());
+  final QRController qrController = Get.put(QRController());
 
   @override
   void initState() {
@@ -43,8 +43,7 @@ class _HomePageState extends State<HomePage> {
       await Get.to(() => QRViewPage());
       // Get.to(() => QRViewPage());
       // if (result != null && result is String) {
-      appController
-          .reloadPersonalData(); // Bisa juga pakai fetch ulang API, dll.
+      cacheController.loadAppList(); // Bisa juga pakai fetch ulang API, dll.
       // }
     } else {
       Get.snackbar("Izin Dibutuhkan", "Akses kamera ditolak.");
@@ -53,8 +52,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller.qrResult.value.isNotEmpty) {
-      Get.snackbar("qr code ", controller.qrResult.value);
+    if (qrController.qrResult.value.isNotEmpty) {
+      Get.snackbar("qr code ", qrController.qrResult.value);
     }
     return Scaffold(
       appBar: AppBar(
@@ -83,7 +82,7 @@ class _HomePageState extends State<HomePage> {
             (base < 30) ? base / 30 : (base - 30) / 29; // prevent div by zero
         return RefreshIndicator(
           onRefresh: () async {
-            await appController.reloadPersonalData();
+            await cacheController.loadAppList();
           },
           child: ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -148,7 +147,11 @@ class _HomePageState extends State<HomePage> {
                                   child: Text('Ya'),
                                   onPressed: () async {
                                     try {
-                                      await appController.destroy(app.id);
+                                      await cacheController.removeAppByIndex(
+                                        index,
+                                      );
+                                      await cacheController.loadAppList();
+                                      // await appController.destroy(app.id);
                                       Get.snackbar(
                                         'Success',
                                         'Application Successfully Deleted',
@@ -160,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                                       );
                                     }
                                     Navigator.of(context).pop();
-                                    appController.reloadPersonalData();
+                                    // appController.reloadPersonalData();
                                   },
                                 ),
                               ],
@@ -183,7 +186,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     appController.dispose();
-    controller.dispose();
+    qrController.dispose();
     cacheController.dispose();
     super.dispose();
   }
