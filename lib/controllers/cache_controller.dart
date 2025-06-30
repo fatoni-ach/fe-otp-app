@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
 import 'package:get/get.dart';
-import 'package:otp/otp.dart';
+// import 'package:otp/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:totp/totp.dart';
 import 'auth_controller.dart';
 
 class CacheController extends GetxController {
@@ -85,16 +86,27 @@ class CacheController extends GetxController {
 
   String _generateKodeOtp(String secretKey) {
     // Generate TOTP sekarang
-    String totp = OTP.generateTOTPCodeString(
-      secretKey,
-      DateTime.now().millisecondsSinceEpoch,
-      interval: 30, // default 30 detik
-      length: 6, // jumlah digit OTP
-      algorithm: Algorithm.SHA512, // bisa SHA256, SHA512
-      // isGoogle: true, // buat kompatibel dengan Google Authenticator
-    );
+    // String totp = OTP.generateTOTPCodeString(
+    //   secretKey,
+    //   DateTime.now().millisecondsSinceEpoch,
+    //   interval: 30, // default 30 detik
+    //   length: 6, // jumlah digit OTP
+    //   algorithm: Algorithm.SHA512, // bisa SHA256, SHA512
+    //   isGoogle: true, // buat kompatibel dengan Google Authenticator
+    // );
 
-    return totp.toString();
+    final totp = Totp(
+      secret: secretKey.codeUnits,
+      algorithm: Algorithm.sha512,
+      digits: 6,
+    );
+    // final totp = Totp.fromBase32(
+    //   secret: secretKey,
+    //   algorithm: Algorithm.sha512,
+    //   digits: 6,
+    //   period: 30,
+    // );
+    return totp.now();
   }
 
   var currentSecond = 0.obs;

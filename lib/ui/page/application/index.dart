@@ -24,7 +24,7 @@ class _ListApplicationPageState extends State<ListApplicationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('OTP APP')),
+      appBar: AppBar(title: const Text('Authenticator App')),
       drawer: CustomSidebar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

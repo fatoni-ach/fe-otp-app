@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Otp App'),
+      home: const MyHomePage(title: 'Authenticator App'),
     );
   }
 }
@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final AuthController authController = Get.put(AuthController());
     return GetMaterialApp(
-      title: 'OTP App',
+      title: 'Authenticator App',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: HomePage(),
       // home: Obx(() {
