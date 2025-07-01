@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
 import 'package:get/get.dart';
-// import 'package:otp/otp.dart';
+import 'package:otp/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:totp/totp.dart';
+// import 'package:totp/totp.dart';
 import 'auth_controller.dart';
 
 class CacheController extends GetxController {
@@ -47,18 +47,22 @@ class CacheController extends GetxController {
     // }
 
     for (var i = 0; i < listTemp.length; i++) {
-      listTemp[i].kodeOtp = _generateKodeOtp(listTemp[i].secretKey);
+      listTemp[i].kodeOtp = _generateKodeOtp(
+        listTemp[i].secretKey,
+        listTemp[i].algorithm,
+      );
     }
     listApp.value = listTemp;
   }
 
-  Future<void> addApp(String name, issuer, secretKey) async {
+  Future<void> addApp(String name, issuer, secretKey, algorithm) async {
     final newUser = Application(
       id: 0,
       name: name,
       issuer: issuer,
       secretKey: secretKey,
       kodeOtp: "",
+      algorithm: algorithm,
     );
     final temp = listApp.value;
 
@@ -84,7 +88,7 @@ class CacheController extends GetxController {
     await saveAppList(temp);
   }
 
-  String _generateKodeOtp(String secretKey) {
+  String _generateKodeOtp(String secretKey, algorithm) {
     // Generate TOTP sekarang
     // String totp = OTP.generateTOTPCodeString(
     //   secretKey,
@@ -95,18 +99,20 @@ class CacheController extends GetxController {
     //   isGoogle: true, // buat kompatibel dengan Google Authenticator
     // );
 
-    final totp = Totp(
-      secret: secretKey.codeUnits,
-      algorithm: Algorithm.sha512,
-      digits: 6,
+    var alg = Algorithm.SHA1;
+    if (algorithm == "SHA512") {
+      alg = Algorithm.SHA512;
+    }
+
+    String totp = OTP.generateTOTPCodeString(
+      secretKey,
+      DateTime.now().millisecondsSinceEpoch,
+      interval: 30, // default 30 detik
+      length: 6, // jumlah digit OTP
+      algorithm: alg, // bisa SHA256, SHA512
+      isGoogle: true, // buat kompatibel dengan Google Authenticator
     );
-    // final totp = Totp.fromBase32(
-    //   secret: secretKey,
-    //   algorithm: Algorithm.sha512,
-    //   digits: 6,
-    //   period: 30,
-    // );
-    return totp.now();
+    return totp;
   }
 
   var currentSecond = 0.obs;

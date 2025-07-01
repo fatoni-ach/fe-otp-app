@@ -60,9 +60,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (qrController.qrResult.value.isNotEmpty) {
-      Get.snackbar("qr code ", qrController.qrResult.value);
-    }
+    // if (qrController.qrResult.value.isNotEmpty) {
+    //   Get.snackbar("qr code ", qrController.qrResult.value);
+    // }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),

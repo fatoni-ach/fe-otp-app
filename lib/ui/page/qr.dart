@@ -64,6 +64,7 @@ class _QRViewPageState extends State<QRViewPage> {
 
       var secretKey = uri.queryParameters['secret'];
       var issuer = uri.queryParameters['issuer'];
+      var algorithm = uri.queryParameters['algorithm'] ?? '';
       var name = uri.pathSegments[0];
 
       if (secretKey == '' || issuer == '' || name == '') {
@@ -76,7 +77,7 @@ class _QRViewPageState extends State<QRViewPage> {
       // await controller.pauseCamera();
 
       if (count <= 1) {
-        await cacheController.addApp(name, issuer, secretKey);
+        await cacheController.addApp(name, issuer, secretKey, algorithm);
         await cacheController.loadAppList();
       }
       // applicationController.storeMyTOTP(name, issuer, secret);

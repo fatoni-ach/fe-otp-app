@@ -6,6 +6,7 @@ class Application {
   String kodeOtp;
   final String issuer;
   final String secretKey;
+  final String algorithm;
 
   Application({
     required this.id,
@@ -13,6 +14,7 @@ class Application {
     required this.kodeOtp,
     required this.issuer,
     required this.secretKey,
+    required this.algorithm,
   });
 
   factory Application.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class Application {
       kodeOtp: json['kode_otp'] ?? '',
       issuer: json['issuer'] ?? '',
       secretKey: json['secret_key'] ?? '',
+      algorithm: json['algorithm'] ?? '',
     );
   }
 
@@ -32,6 +35,7 @@ class Application {
       'kode_otp': kodeOtp,
       'issuer': issuer,
       'secret_key': secretKey,
+      'algorithm': algorithm,
     };
   }
 }
