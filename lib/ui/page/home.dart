@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
+import 'package:flutter_first_app/controllers/auth_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/qr_controller.dart';
 import 'package:flutter_first_app/ui/page/qr.dart';
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ApplicationController appController = Get.put(ApplicationController());
   final CacheController cacheController = Get.put(CacheController());
+  final AuthController authController = Get.put(AuthController());
 
   final QRController qrController = Get.put(QRController());
 
@@ -60,9 +62,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // if (qrController.qrResult.value.isNotEmpty) {
-    //   Get.snackbar("qr code ", qrController.qrResult.value);
-    // }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -201,6 +200,7 @@ class _HomePageState extends State<HomePage> {
     appController.dispose();
     qrController.dispose();
     cacheController.dispose();
+    authController.dispose();
     super.dispose();
   }
 }

@@ -14,7 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     // Inisialisasi AuthController
-    final AuthController authController = Get.put(AuthController());
+    final AuthController authController = Get.find<AuthController>();
 
     final TextEditingController usernameController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
