@@ -66,7 +66,7 @@ class CacheController extends GetxController {
     );
     final temp = listApp.value;
 
-    if (temp == null) {
+    if (temp.isEmpty) {
       return;
     }
 

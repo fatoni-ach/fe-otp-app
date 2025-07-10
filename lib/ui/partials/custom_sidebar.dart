@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_first_app/ui/page/home.dart';
-import '../page/login.dart';
+// import '../page/login.dart';
 import '../../controllers/auth_controller.dart';
 import 'package:get/get.dart';
 

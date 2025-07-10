@@ -48,6 +48,8 @@ dependencies:
   zxing2: ^0.2.3
   image: ^4.5.4
   # flutter_zxing: ^2.0.0
+  flutter_web_auth_2: ^2.2.1
+  google_sign_in: ^6.1.5
 
 dev_dependencies:
   flutter_test:

@@ -26,6 +26,10 @@ flutter run -d macos
 
 // Linux
 flutter run -d linux
+
+
+// Running in spesific port
+flutter run -d chrome --web-port=8000
 ```
 
 Location Build :  build\windows\x64\runner\Release\
