@@ -4,9 +4,11 @@ import 'package:flutter_first_app/middleware/auth_middleware.dart';
 // import 'package:flutter_first_app/models/user.dart';
 import 'package:flutter_first_app/ui/page/application/create.dart';
 import 'package:flutter_first_app/ui/page/application/index.dart';
+import 'package:flutter_first_app/ui/page/auth/token_capture.dart';
 import 'package:flutter_first_app/ui/page/client/ListClientPage.dart';
 import 'package:flutter_first_app/ui/page/client/create.dart';
 import 'package:flutter_first_app/ui/page/client/edit.dart';
+import 'package:flutter_first_app/ui/page/auth/google_oauth.dart';
 import 'package:flutter_first_app/ui/page/mykeys/create.dart';
 import 'package:flutter_first_app/ui/page/mykeys/edit.dart';
 import 'package:flutter_first_app/ui/page/mykeys/index.dart';
@@ -31,13 +33,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Authenticator App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Authenticator App'),
-    );
+    // return MaterialApp(
+    //   title: 'Authenticator App',
+    //   theme: ThemeData(
+    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    //   ),
+    //   home: const MyHomePage(title: 'Authenticator App'),
+    // );
+
+    return MyHomePage(title: 'Authenticator App');
   }
 }
 
@@ -57,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return GetMaterialApp(
       title: 'Authenticator App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomePage(),
+      // home: HomePage(),
       // home: Obx(() {
       //   // Cek status login dan arahkan ke halaman yang sesuai
       //   if (authController.isLoggedIn.value) {
@@ -74,6 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // middlewares: [AuthMiddleware()],
         ),
         GetPage(name: '/login', page: () => LoginPage()),
+        GetPage(name: '/oauth/login', page: () => GoogleOAuthPage()),
+        GetPage(name: '/oauth/callback', page: () => TokenCapturePage()),
         GetPage(name: '/profile', page: () => ProfilePage()),
         GetPage(
           name: '/admin/users',

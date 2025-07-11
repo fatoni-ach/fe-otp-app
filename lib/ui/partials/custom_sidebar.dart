@@ -98,6 +98,7 @@ class CustomSidebar extends StatelessWidget {
     );
   }
 
+  // http://localhost:8000/#/auth?state=1752246200012&code=4/0AVMBsJhyBZnKOGC4m8F0uaStj7KynmFO8mnLgmmes4t68LoMV6NvSRMkofTCykcqJOheQQ&scope=https://www.googleapis.com/auth/drive.file
   Widget _isNotLogin() {
     return Column(
       children: [
@@ -106,6 +107,13 @@ class CustomSidebar extends StatelessWidget {
           title: const Text('Login'),
           onTap: () {
             Get.toNamed("/login");
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.login),
+          title: const Text('Login With Google'),
+          onTap: () {
+            Get.toNamed("/oauth/login");
           },
         ),
       ],
