@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_first_app/controllers/application_controller.dart';
+import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/middleware/auth_middleware.dart';
 // import 'package:flutter_first_app/models/user.dart';
 import 'package:flutter_first_app/ui/page/application/create.dart';
@@ -70,6 +72,11 @@ class _MyHomePageState extends State<MyHomePage> {
       //     return const LoginPage();
       //   }
       // }), // ⬅️ Awal masuk ke LoginPage dulu
+      // initialBinding: BindingsBuilder(() {
+      //   Get.put(CacheController());
+      //   Get.put(AuthController());
+      //   Get.put(ApplicationController());
+      // }),
       initialRoute: '/',
       getPages: [
         GetPage(

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
+import 'package:flutter_first_app/models/google_access.dart';
 import 'package:get/get.dart';
 import 'package:otp/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +15,8 @@ class CacheController extends GetxController {
   final ApplicationController appController = Get.find<ApplicationController>();
 
   var listApp = <Application>[].obs;
+
+  var googleAccess = Rxn<GoogleAccess>();
 
   @override
   void onInit() {
@@ -29,6 +33,26 @@ class CacheController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = encodeAppllicationList(apps);
     await prefs.setString('application_list', jsonString);
+  }
+
+  Future<void> saveGoogleAccess(String accessToken, refreshToken) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final ga = GoogleAccess(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      isLogin: true,
+    );
+
+    final jsonString = jsonEncode(ga.toJson());
+    await prefs.setString('google_access', jsonString);
+  }
+
+  Future<void> getGoogleAccess() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('google_access') ?? '[]';
+
+    googleAccess.value = GoogleAccess.fromJson(json.decode(jsonString));
   }
 
   Future<void> loadAppList() async {

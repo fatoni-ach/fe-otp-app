@@ -1,11 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/ui/partials/custom_sidebar.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class GoogleOAuthPage extends StatelessWidget {
-  GoogleOAuthPage({super.key});
+class GoogleOAuthPage extends StatefulWidget {
+  const GoogleOAuthPage({super.key});
+
+  @override
+  State<GoogleOAuthPage> createState() => _GoogleOAuthPageState();
+}
+
+class _GoogleOAuthPageState extends State<GoogleOAuthPage> {
+  final cacheController = Get.find<CacheController>();
 
   final clientId = dotenv.env['GC_CLIENT_ID'];
   final clientSecret = dotenv.env['GC_CLIENT_SECRET'];
@@ -29,16 +38,31 @@ class GoogleOAuthPage extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    cacheController.getGoogleAccess();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Google OAuth Desktop')),
       drawer: CustomSidebar(),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: _authenticate,
-          child: const Text('Login with Google'),
-        ),
-      ),
+      body: Obx(() {
+        var ga = cacheController.googleAccess.value;
+        bool isLogin = false;
+
+        if (ga != null) isLogin = ga.isLogin;
+        return (isLogin)
+            ? Center(child: Text('You are login'))
+            : Center(
+              child: ElevatedButton(
+                onPressed: _authenticate,
+                child: const Text('Login with Google'),
+              ),
+            );
+      }),
     );
   }
 }
