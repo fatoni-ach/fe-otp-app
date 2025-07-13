@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_first_app/controllers/application_controller.dart';
+import 'package:flutter_first_app/controllers/oauth_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
 import 'package:flutter_first_app/models/google_access.dart';
+import 'package:flutter_first_app/models/profile.dart';
 import 'package:get/get.dart';
 import 'package:otp/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +15,7 @@ import 'auth_controller.dart';
 class CacheController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   final ApplicationController appController = Get.find<ApplicationController>();
+  // final OAuthController oauthController = Get.put(OAuthController());
 
   var listApp = <Application>[].obs;
 

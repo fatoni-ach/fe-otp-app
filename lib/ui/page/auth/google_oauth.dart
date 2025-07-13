@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_first_app/controllers/auth_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
+import 'package:flutter_first_app/controllers/oauth_controller.dart';
+import 'package:flutter_first_app/models/profile.dart';
 import 'package:flutter_first_app/ui/partials/custom_sidebar.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,12 +17,14 @@ class GoogleOAuthPage extends StatefulWidget {
 }
 
 class _GoogleOAuthPageState extends State<GoogleOAuthPage> {
-  final cacheController = Get.find<CacheController>();
+  // final cacheController = Get.find<CacheController>();
+  final oAuthController = Get.find<OAuthController>();
 
   final clientId = dotenv.env['GC_CLIENT_ID'];
   final clientSecret = dotenv.env['GC_CLIENT_SECRET'];
   final redirectUri = dotenv.env['GC_REDIRECT_URI'];
-  final scopes = 'https://www.googleapis.com/auth/drive.file';
+  final scopes =
+      'openid email profile https://www.googleapis.com/auth/drive.file';
 
   Future<void> _authenticate() async {
     final state = DateTime.now().millisecondsSinceEpoch.toString();
@@ -39,7 +44,7 @@ class _GoogleOAuthPageState extends State<GoogleOAuthPage> {
 
   @override
   void initState() {
-    cacheController.getGoogleAccess();
+    oAuthController.fetchUserInfo();
 
     super.initState();
   }
@@ -50,12 +55,40 @@ class _GoogleOAuthPageState extends State<GoogleOAuthPage> {
       appBar: AppBar(title: const Text('Google OAuth Desktop')),
       drawer: CustomSidebar(),
       body: Obx(() {
-        var ga = cacheController.googleAccess.value;
-        bool isLogin = false;
+        var profil = oAuthController.profil.value;
+        // bool isLogin = false;
 
-        if (ga != null) isLogin = ga.isLogin;
-        return (isLogin)
-            ? Center(child: Text('You are login'))
+        // if (profil != null && profil.isLogin) {
+        //   isLogin = profil.isLogin;
+        // }
+
+        if (profil == null) {
+          return Center(
+            child: ElevatedButton(
+              onPressed: _authenticate,
+              child: const Text('Login with Google'),
+            ),
+          );
+        }
+
+        return (profil.isLogin)
+            ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(profil.picture),
+                    radius: 40,
+                  ),
+                  const SizedBox(height: 10),
+                  Text('Name: ${profil.name}'),
+                  Text('Email: ${profil.email}'),
+                  // Text('Email: ${profile.picture}'),
+                ],
+              ),
+            )
             : Center(
               child: ElevatedButton(
                 onPressed: _authenticate,

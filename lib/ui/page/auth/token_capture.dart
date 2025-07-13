@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
+import 'package:flutter_first_app/controllers/oauth_controller.dart';
 import 'package:flutter_first_app/ui/page/auth/google_oauth.dart';
 import 'package:flutter_first_app/ui/page/home.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ class _TokenCapturePageState extends State<TokenCapturePage> {
   String? accessToken;
 
   final cacheController = Get.find<CacheController>();
+  final oAuthController = Get.find<OAuthController>();
 
   final clientId = dotenv.env['GC_CLIENT_ID'];
   final clientSecret = dotenv.env['GC_CLIENT_SECRET'];
@@ -50,6 +52,7 @@ class _TokenCapturePageState extends State<TokenCapturePage> {
     final refreshToken = tokenData['refresh_token'];
 
     await cacheController.saveGoogleAccess(accessToken, refreshToken);
+    await oAuthController.fetchUserInfo();
 
     Get.snackbar('Success', 'You success login to OAUTH');
     Get.offAll(HomePage());

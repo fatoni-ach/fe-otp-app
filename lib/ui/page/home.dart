@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/controllers/auth_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
+import 'package:flutter_first_app/controllers/oauth_controller.dart';
 import 'package:flutter_first_app/controllers/qr_controller.dart';
 import 'package:flutter_first_app/ui/page/qr.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,17 +20,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ApplicationController appController = Get.put(ApplicationController());
-  final CacheController cacheController = Get.put(CacheController());
-  final AuthController authController = Get.put(AuthController());
+  final ApplicationController appController = Get.find<ApplicationController>();
+  final AuthController authController = Get.find<AuthController>();
+  final CacheController cacheController = Get.find<CacheController>();
+  final OAuthController oAuthController = Get.find<OAuthController>();
 
-  final QRController qrController = Get.put(QRController());
+  final QRController qrController = Get.find<QRController>();
 
   @override
   void initState() {
     super.initState();
     // appController.getPersonalApplication();
     cacheController.loadAppList();
+    // cacheController.saveGoogleAccess(dotenv.env['TEMP_AT'] ?? '', '');
   }
 
   // Future<void> pickImageAndScan() async {
