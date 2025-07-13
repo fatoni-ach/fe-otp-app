@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_first_app/controllers/auth_controller.dart';
-import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/oauth_controller.dart';
-import 'package:flutter_first_app/models/profile.dart';
 import 'package:flutter_first_app/ui/partials/custom_sidebar.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';

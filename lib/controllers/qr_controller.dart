@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:get/get.dart';
 import 'package:zxing2/qrcode.dart';
@@ -31,7 +30,7 @@ class QRController extends GetxController {
 
       var reader = QRCodeReader();
       var result = reader.decode(bitmap);
-      print("QR CODE : ${result.text}");
+      // print("QR CODE : ${result.text}");
 
       qrResult.value = result.text;
     } catch (e) {

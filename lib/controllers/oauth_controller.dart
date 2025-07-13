@@ -45,11 +45,11 @@ class OAuthController extends GetxController {
 
       profil.value = temp;
 
-      print('USER INFO : ${response.body}');
+      // print('USER INFO : ${response.body}');
       isLoading = false;
     } else {
       isLoading = false;
-      print('Failed to fetch user info: ${response.body}');
+      // print('Failed to fetch user info: ${response.body}');
     }
   }
 

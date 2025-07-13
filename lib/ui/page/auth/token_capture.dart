@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/oauth_controller.dart';
-import 'package:flutter_first_app/ui/page/auth/google_oauth.dart';
 import 'package:flutter_first_app/ui/page/home.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -33,7 +32,7 @@ class _TokenCapturePageState extends State<TokenCapturePage> {
 
   Future<void> getCode() async {
     final code = Get.parameters['code'];
-    final state = Get.parameters['state'];
+    // final state = Get.parameters['state'];
 
     final tokenResponse = await http.post(
       Uri.parse('https://oauth2.googleapis.com/token'),
