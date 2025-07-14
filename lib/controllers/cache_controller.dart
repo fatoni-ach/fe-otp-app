@@ -51,7 +51,7 @@ class CacheController extends GetxController {
 
   Future<void> getGoogleAccess() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('google_access') ?? '[]';
+    final jsonString = prefs.getString('google_access') ?? '{}';
 
     googleAccess.value = GoogleAccess.fromJson(json.decode(jsonString));
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/models/profile.dart';
 import 'package:get/get.dart';
@@ -65,5 +66,57 @@ class OAuthController extends GetxController {
     final jsonString = prefs.getString('profile_google') ?? '{}';
 
     profil.value = ProfileGoogle.fromJson(json.decode(jsonString));
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    var profile = ProfileGoogle(
+      sub: '',
+      name: '',
+      givenName: '',
+      familyName: '',
+      picture: '',
+      email: '',
+      emailVerified: false,
+      isLogin: false,
+    );
+    final jsonString = jsonEncode(profile.toJson());
+    await prefs.setString('profile_google', jsonString);
+  }
+
+  Future<void> refreshAccessToken() async {
+    final clientId = dotenv.env['GC_CLIENT_ID'] ?? '';
+    final clientSecret = dotenv.env['GC_CLIENT_SECRET'] ?? '';
+
+    await cacheController.getGoogleAccess();
+
+    var ga = cacheController.googleAccess.value;
+
+    if (ga == null) {
+      Get.snackbar('Error', 'There is no access');
+      return;
+    }
+    final refreshToken = ga.refreshToken;
+
+    final response = await http.post(
+      Uri.parse('https://oauth2.googleapis.com/token'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'refresh_token': refreshToken,
+        'grant_type': 'refresh_token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final newAccessToken = jsonData['access_token'];
+
+      await cacheController.saveGoogleAccess(newAccessToken, refreshToken);
+    } else {
+      Get.snackbar('Error', 'Failed Re login');
+    }
   }
 }

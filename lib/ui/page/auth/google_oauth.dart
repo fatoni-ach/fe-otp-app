@@ -39,6 +39,15 @@ class _GoogleOAuthPageState extends State<GoogleOAuthPage> {
     launchUrl(authUrl);
   }
 
+  // Future<void> _refreshToken() async {
+  //   await oAuthController.refreshAccessToken();
+  // }
+
+  Future<void> _logout() async {
+    await oAuthController.logout();
+    await oAuthController.getProfileGoogle();
+  }
+
   @override
   void initState() {
     oAuthController.fetchUserInfo();
@@ -61,9 +70,13 @@ class _GoogleOAuthPageState extends State<GoogleOAuthPage> {
 
         if (profil == null) {
           return Center(
-            child: ElevatedButton(
-              onPressed: _authenticate,
-              child: const Text('Login with Google'),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: _authenticate,
+                  child: const Text('Login with Google'),
+                ),
+              ],
             ),
           );
         }
@@ -75,21 +88,32 @@ class _GoogleOAuthPageState extends State<GoogleOAuthPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 20),
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(profil.picture),
-                    radius: 40,
-                  ),
+                  // CircleAvatar(
+                  //   backgroundImage: NetworkImage(
+                  //     'https://placehold.jp/150x150.png',
+                  //   ),
+                  //   radius: 40,
+                  // ),
                   const SizedBox(height: 10),
                   Text('Name: ${profil.name}'),
                   Text('Email: ${profil.email}'),
                   // Text('Email: ${profile.picture}'),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: _logout,
+                    child: const Text('Logout'),
+                  ),
                 ],
               ),
             )
             : Center(
-              child: ElevatedButton(
-                onPressed: _authenticate,
-                child: const Text('Login with Google'),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: _authenticate,
+                    child: const Text('Login with Google'),
+                  ),
+                ],
               ),
             );
       }),
