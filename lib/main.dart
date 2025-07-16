@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
+import 'package:flutter_first_app/controllers/gd_controller.dart';
 import 'package:flutter_first_app/controllers/oauth_controller.dart';
 import 'package:flutter_first_app/controllers/qr_controller.dart';
 import 'package:flutter_first_app/middleware/auth_middleware.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_first_app/ui/page/auth/google_oauth.dart';
 import 'package:flutter_first_app/ui/page/mykeys/create.dart';
 import 'package:flutter_first_app/ui/page/mykeys/edit.dart';
 import 'package:flutter_first_app/ui/page/mykeys/index.dart';
+import 'package:flutter_first_app/ui/page/upload_json.dart';
 import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
 import 'package:flutter_first_app/ui/page/user/create.dart';
 import 'package:flutter_first_app/ui/page/user/detail.dart';
@@ -79,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Get.put(CacheController());
         Get.put(OAuthController());
         Get.put(QRController());
+        Get.put(GdController());
       }),
       initialRoute: '/',
       getPages: [
@@ -150,6 +153,11 @@ class _MyHomePageState extends State<MyHomePage> {
           name: '/my/keys/edit',
           page: () => EditMyKeysPage(),
           middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/upload-json',
+          page: () => UploadJsonToDrive(),
+          // middlewares: [AuthMiddleware()],
         ),
       ],
     );

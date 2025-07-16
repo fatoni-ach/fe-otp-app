@@ -1,0 +1,111 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:flutter_first_app/controllers/cache_controller.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+
+class GdController extends GetxController {
+  CacheController cacheController = Get.find<CacheController>();
+  String _accessToken = '';
+
+  @override
+  void onInit() async {
+    // TODO: implement onInit
+    await cacheController.getGoogleAccess();
+
+    var ga = cacheController.googleAccess.value;
+
+    super.onInit();
+    if (ga == null) {
+      return;
+    }
+
+    _accessToken = ga.accessToken;
+  }
+
+  Future<bool> uploadFile(
+    Uint8List fileBytes,
+    String fileName,
+    String folderId,
+  ) async {
+    final uri = Uri.parse(
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+    );
+    final boundary = 'flutter_boundary';
+
+    final metadata = {
+      'name': fileName,
+      'mimeType': 'application/json',
+      'parents': [folderId],
+    };
+
+    final body = <int>[];
+    body.addAll(utf8.encode('--$boundary\r\n'));
+    body.addAll(
+      utf8.encode('Content-Type: application/json; charset=UTF-8\r\n\r\n'),
+    );
+    body.addAll(utf8.encode(json.encode(metadata)));
+    body.addAll(utf8.encode('\r\n'));
+
+    body.addAll(utf8.encode('--$boundary\r\n'));
+    body.addAll(utf8.encode('Content-Type: application/json\r\n\r\n'));
+    body.addAll(fileBytes);
+    body.addAll(utf8.encode('\r\n--$boundary--\r\n'));
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+        'Content-Type': 'multipart/related; boundary=$boundary',
+      },
+      body: Uint8List.fromList(body),
+    );
+
+    print('Upload status: ${response.statusCode}');
+    return response.statusCode == 200;
+  }
+
+  Future<String?> getOrCreateFolder(String folderName) async {
+    // Step 1: Check if folder exists
+    final query =
+        "mimeType='application/vnd.google-apps.folder' and name='$folderName' and trashed=false";
+    final listUri = Uri.parse(
+      'https://www.googleapis.com/drive/v3/files?q=${Uri.encodeComponent(query)}&fields=files(id,name)',
+    );
+    final listResponse = await http.get(
+      listUri,
+      headers: {'Authorization': 'Bearer $_accessToken'},
+    );
+
+    if (listResponse.statusCode == 200) {
+      final data = json.decode(listResponse.body);
+      final files = data['files'] as List<dynamic>;
+      if (files.isNotEmpty) {
+        return files.first['id'];
+      }
+    }
+
+    // Step 2: Create folder if not exists
+    final createUri = Uri.parse('https://www.googleapis.com/drive/v3/files');
+    final createResponse = await http.post(
+      createUri,
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'name': folderName,
+        'mimeType': 'application/vnd.google-apps.folder',
+      }),
+    );
+
+    if (createResponse.statusCode == 200) {
+      final created = json.decode(createResponse.body);
+      return created['id'];
+    } else {
+      print('Gagal membuat folder: ${createResponse.body}');
+      return null;
+    }
+  }
+}

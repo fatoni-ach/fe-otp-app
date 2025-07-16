@@ -116,6 +116,13 @@ class CustomSidebar extends StatelessWidget {
             Get.toNamed("/oauth/login");
           },
         ),
+        ListTile(
+          leading: const Icon(Icons.upload),
+          title: const Text('Upload File'),
+          onTap: () {
+            Get.toNamed("/upload-json");
+          },
+        ),
       ],
     );
   }
