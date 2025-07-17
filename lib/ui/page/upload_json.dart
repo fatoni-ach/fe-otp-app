@@ -50,6 +50,19 @@ class _UploadJsonToDriveState extends State<UploadJsonToDrive> {
     );
   }
 
+  void loadFiles() async {
+    final files = await gdController.listDriveFiles();
+    for (var file in files) {
+      print('File: ${file['name']} (${file['id']})');
+      if (file['name'] == 'data.bak') {
+        final content = await gdController.downloadFileContent(file['id']);
+        // Return content bentuk json
+        // {"message":"Hello from Flutter! update","timestamp":"2025-07-17T14:15:06.583"}
+        print('Isi file: $content');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -58,6 +71,8 @@ class _UploadJsonToDriveState extends State<UploadJsonToDrive> {
           onPressed: uploadJsonToFolder,
           child: const Text('Upload JSON ke Google Drive'),
         ),
+        SizedBox(height: 30),
+        ElevatedButton(onPressed: loadFiles, child: const Text('Load Files')),
         if (uploadStatus != null) Text(uploadStatus!),
       ],
     );

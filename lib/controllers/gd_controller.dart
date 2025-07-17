@@ -108,4 +108,42 @@ class GdController extends GetxController {
       return null;
     }
   }
+
+  Future<List<Map<String, dynamic>>> listDriveFiles() async {
+    final uri = Uri.parse(
+      'https://www.googleapis.com/drive/v3/files?q=mimeType="application/json"&fields=files(id,name,mimeType)',
+    );
+
+    final response = await http.get(
+      uri,
+      headers: {'Authorization': 'Bearer $_accessToken'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List files = data['files'];
+      return files.cast<Map<String, dynamic>>();
+    } else {
+      print('Gagal mengambil daftar file: ${response.body}');
+      return [];
+    }
+  }
+
+  Future<String?> downloadFileContent(String fileId) async {
+    final uri = Uri.parse(
+      'https://www.googleapis.com/drive/v3/files/$fileId?alt=media',
+    );
+
+    final response = await http.get(
+      uri,
+      headers: {'Authorization': 'Bearer $_accessToken'},
+    );
+
+    if (response.statusCode == 200) {
+      return utf8.decode(response.bodyBytes); // isi file dalam bentuk string
+    } else {
+      print('Gagal download file: ${response.body}');
+      return null;
+    }
+  }
 }
