@@ -37,6 +37,14 @@ class CustomSidebar extends StatelessWidget {
               Get.toNamed("/");
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {
+              Get.back();
+              Get.toNamed("/settings");
+            },
+          ),
           (authController.isLoggedIn.value) ? _isLoggin() : _isNotLogin(),
         ],
       ),
@@ -109,20 +117,20 @@ class CustomSidebar extends StatelessWidget {
             Get.toNamed("/login");
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.login),
-          title: const Text('Login With Google'),
-          onTap: () {
-            Get.toNamed("/oauth/login");
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.upload),
-          title: const Text('Upload File'),
-          onTap: () {
-            Get.toNamed("/upload-json");
-          },
-        ),
+        // ListTile(
+        //   leading: const Icon(Icons.login),
+        //   title: const Text('Login With Google'),
+        //   onTap: () {
+        //     Get.toNamed("/oauth/login");
+        //   },
+        // ),
+        // ListTile(
+        //   leading: const Icon(Icons.upload),
+        //   title: const Text('Upload File'),
+        //   onTap: () {
+        //     Get.toNamed("/upload-json");
+        //   },
+        // ),
       ],
     );
   }

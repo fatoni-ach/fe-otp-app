@@ -17,6 +17,8 @@ import 'package:flutter_first_app/ui/page/auth/google_oauth.dart';
 import 'package:flutter_first_app/ui/page/mykeys/create.dart';
 import 'package:flutter_first_app/ui/page/mykeys/edit.dart';
 import 'package:flutter_first_app/ui/page/mykeys/index.dart';
+import 'package:flutter_first_app/ui/page/settings/backup.dart';
+import 'package:flutter_first_app/ui/page/settings/settings.dart';
 import 'package:flutter_first_app/ui/page/upload_json.dart';
 import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
 import 'package:flutter_first_app/ui/page/user/create.dart';
@@ -157,6 +159,16 @@ class _MyHomePageState extends State<MyHomePage> {
         GetPage(
           name: '/upload-json',
           page: () => UploadJsonToDrive(),
+          // middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/settings',
+          page: () => SettingsPage(),
+          // middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/settings/backup',
+          page: () => BackupPage(),
           // middlewares: [AuthMiddleware()],
         ),
       ],

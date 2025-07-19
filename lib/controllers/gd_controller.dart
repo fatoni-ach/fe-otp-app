@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_first_app/controllers/cache_controller.dart';
+import 'package:flutter_first_app/models/Application.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class GdController extends GetxController {
   CacheController cacheController = Get.find<CacheController>();
   String _accessToken = '';
+  final fileName = 'backup.bak';
 
   @override
   void onInit() async {
@@ -62,7 +64,7 @@ class GdController extends GetxController {
       body: Uint8List.fromList(body),
     );
 
-    print('Upload status: ${response.statusCode}');
+    // print('Upload status: ${response.statusCode}');
     return response.statusCode == 200;
   }
 
@@ -104,7 +106,8 @@ class GdController extends GetxController {
       final created = json.decode(createResponse.body);
       return created['id'];
     } else {
-      print('Gagal membuat folder: ${createResponse.body}');
+      // print('Gagal membuat folder: ${createResponse.body}');
+      Get.snackbar('Failed', 'Error backup data (create folder)');
       return null;
     }
   }
@@ -144,6 +147,103 @@ class GdController extends GetxController {
     } else {
       print('Gagal download file: ${response.body}');
       return null;
+    }
+  }
+
+  Future<void> uploadOrReplaceInFolder() async {
+    var folderId = await getOrCreateFolder('authenticator');
+
+    await cacheController.loadAppList();
+
+    var listApp = cacheController.listApp.value;
+
+    var jsonData = encodeAppllicationList(listApp);
+
+    final contentJson = json.encode(jsonData);
+    final contentBytes = utf8.encode(contentJson);
+
+    // Step 1: Cek apakah file dengan nama tersebut sudah ada di folder
+    final query =
+        "name='$fileName' and '${folderId}' in parents and trashed=false";
+    final uri = Uri.parse(
+      'https://www.googleapis.com/drive/v3/files?q=${Uri.encodeComponent(query)}&fields=files(id,name)',
+    );
+
+    final searchResponse = await http.get(
+      uri,
+      headers: {'Authorization': 'Bearer $_accessToken'},
+    );
+
+    String? fileIdToReplace;
+
+    if (searchResponse.statusCode == 200) {
+      final data = json.decode(searchResponse.body);
+      final files = data['files'] as List<dynamic>;
+      if (files.isNotEmpty) {
+        fileIdToReplace = files.first['id'];
+      }
+    }
+
+    if (fileIdToReplace != null) {
+      // File sudah ada → replace isinya via PATCH
+      final patchUri = Uri.parse(
+        'https://www.googleapis.com/upload/drive/v3/files/$fileIdToReplace?uploadType=media',
+      );
+
+      final patchResponse = await http.patch(
+        patchUri,
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: Uint8List.fromList(contentBytes),
+      );
+
+      if (patchResponse.statusCode == 200) {
+        Get.snackbar('Success', 'Berhasil backup data');
+      } else {
+        Get.snackbar('Failed', 'Gagal backup data');
+      }
+    } else {
+      // File tidak ada → Upload baru ke folder
+      final uploadUri = Uri.parse(
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+      );
+      final boundary = 'flutter_form_boundary';
+
+      final metadata = {
+        'name': fileName,
+        'mimeType': 'application/json',
+        'parents': [folderId],
+      };
+
+      final body = <int>[];
+      body.addAll(utf8.encode('--$boundary\r\n'));
+      body.addAll(
+        utf8.encode('Content-Type: application/json; charset=UTF-8\r\n\r\n'),
+      );
+      body.addAll(utf8.encode(json.encode(metadata)));
+      body.addAll(utf8.encode('\r\n'));
+
+      body.addAll(utf8.encode('--$boundary\r\n'));
+      body.addAll(utf8.encode('Content-Type: application/json\r\n\r\n'));
+      body.addAll(contentBytes);
+      body.addAll(utf8.encode('\r\n--$boundary--\r\n'));
+
+      final postResponse = await http.post(
+        uploadUri,
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+          'Content-Type': 'multipart/related; boundary=$boundary',
+        },
+        body: Uint8List.fromList(body),
+      );
+
+      if (postResponse.statusCode == 200) {
+        Get.snackbar('Success', 'Berhasil backup data');
+      } else {
+        Get.snackbar('Failed', 'Gagal backup data');
+      }
     }
   }
 }

@@ -10,8 +10,11 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OAuthController extends GetxController {
+  final clientId = dotenv.env['GC_CLIENT_ID'] ?? '';
+  final clientSecret = dotenv.env['GC_CLIENT_SECRET'] ?? '';
+
   CacheController cacheController = Get.find<CacheController>();
-  // Map<String, dynamic>? userInfo;
+
   var profil = Rxn<ProfileGoogle>();
   bool isLoading = true;
 
@@ -28,7 +31,7 @@ class OAuthController extends GetxController {
 
     var profilTemp = profil.value;
 
-    if (profilTemp == null || profilTemp.isLogin) {
+    if (profilTemp?.isLogin ?? false) {
       return;
     }
 
@@ -38,7 +41,6 @@ class OAuthController extends GetxController {
     );
 
     if (response.statusCode == 200) {
-      // var userInfo = json.decode(response.body);
       var temp = ProfileGoogle.fromJson(json.decode(response.body));
       temp.isLogin = true;
 
@@ -46,11 +48,23 @@ class OAuthController extends GetxController {
 
       profil.value = temp;
 
-      // print('USER INFO : ${response.body}');
       isLoading = false;
+    }
+    if (response.statusCode == 401) {
+      var temp = ProfileGoogle(
+        sub: '',
+        name: '',
+        givenName: '',
+        familyName: '',
+        picture: '',
+        email: '',
+        emailVerified: false,
+        isLogin: false,
+      );
+      await saveProfileGoogle(temp);
+      profil.value = temp;
     } else {
       isLoading = false;
-      // print('Failed to fetch user info: ${response.body}');
     }
   }
 
@@ -86,9 +100,6 @@ class OAuthController extends GetxController {
   }
 
   Future<void> refreshAccessToken() async {
-    final clientId = dotenv.env['GC_CLIENT_ID'] ?? '';
-    final clientSecret = dotenv.env['GC_CLIENT_SECRET'] ?? '';
-
     await cacheController.getGoogleAccess();
 
     var ga = cacheController.googleAccess.value;
