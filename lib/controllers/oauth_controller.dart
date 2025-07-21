@@ -27,13 +27,13 @@ class OAuthController extends GetxController {
       return;
     }
 
-    await getProfileGoogle();
+    // await getProfileGoogle();
 
-    var profilTemp = profil.value;
+    // var profilTemp = profil.value;
 
-    if (profilTemp?.isLogin ?? false) {
-      return;
-    }
+    // if (profilTemp?.isLogin ?? false) {
+    //   return;
+    // }
 
     final response = await http.get(
       Uri.parse('https://www.googleapis.com/oauth2/v3/userinfo'),

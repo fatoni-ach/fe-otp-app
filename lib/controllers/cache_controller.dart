@@ -49,6 +49,15 @@ class CacheController extends GetxController {
     await prefs.setString('google_access', jsonString);
   }
 
+  Future<void> removeGoogleAccess() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final ga = GoogleAccess(accessToken: '', refreshToken: '', isLogin: false);
+
+    final jsonString = jsonEncode(ga.toJson());
+    await prefs.setString('google_access', jsonString);
+  }
+
   Future<void> getGoogleAccess() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString('google_access') ?? '{}';
@@ -90,10 +99,6 @@ class CacheController extends GetxController {
       algorithm: algorithm,
     );
     final temp = listApp.value;
-
-    if (temp.isEmpty) {
-      return;
-    }
 
     final newList = [...temp, newUser];
 

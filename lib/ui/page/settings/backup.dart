@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/gd_controller.dart';
 import 'package:flutter_first_app/controllers/oauth_controller.dart';
+import 'package:flutter_first_app/models/Application.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +21,8 @@ class _BackupPageState extends State<BackupPage> {
   OAuthController oAuthController = Get.find<OAuthController>();
   GdController gdController = Get.find<GdController>();
   CacheController cacheController = Get.find<CacheController>();
+  ApplicationController applicationController =
+      Get.find<ApplicationController>();
 
   final clientId = dotenv.env['GC_CLIENT_ID'];
   final clientSecret = dotenv.env['GC_CLIENT_SECRET'];
@@ -33,6 +39,8 @@ class _BackupPageState extends State<BackupPage> {
   @override
   void dispose() {
     oAuthController.dispose();
+    gdController.dispose();
+    cacheController.dispose();
     super.dispose();
   }
 
@@ -46,7 +54,6 @@ class _BackupPageState extends State<BackupPage> {
       await oAuthController.fetchUserInfo();
       profil = oAuthController.profil.value;
 
-      print("PROFIL : ${profil?.isLogin}");
       if (profil == null || !profil.isLogin) {
         await oAuthController.logout();
         final state = DateTime.now().millisecondsSinceEpoch.toString();
@@ -68,6 +75,35 @@ class _BackupPageState extends State<BackupPage> {
 
   Future<void> _backupData() async {
     await gdController.uploadOrReplaceInFolder();
+  }
+
+  Future<void> _restoreData() async {
+    final files = await gdController.listDriveFiles();
+    for (var file in files) {
+      if (file['name'] == 'backup.bak') {
+        final content = await gdController.downloadFileContent(file['id']);
+
+        var contentString = jsonDecode(content ?? '[]');
+
+        var listApp = decodeApplicationList(contentString);
+
+        await cacheController.loadAppList;
+
+        var cacheAppList = cacheController.listApp.value;
+
+        listApp.addAll(cacheAppList);
+
+        await cacheController.saveAppList(listApp);
+        Get.snackbar('Sukses', 'Data berhasil di restore');
+        break;
+      }
+    }
+  }
+
+  Future<void> _disconnect() async {
+    await oAuthController.logout();
+    await cacheController.saveGoogleAccess('', '');
+    await oAuthController.getProfileGoogle();
   }
 
   @override
@@ -96,17 +132,29 @@ class _BackupPageState extends State<BackupPage> {
           );
         }
 
-        print("PROFIL : ${profil.name}");
+        // print("PROFIL : ${profil.name}");
         return Center(
           child: Column(
             children: [
               Image.asset('assets/google_drive.png', height: 80),
-              const SizedBox(width: 10),
+              const SizedBox(height: 10),
+              Text(profil.email),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _backupData,
                 child: const Text('Backup ke Drive'),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _restoreData,
+                child: const Text('Restore dari Drive'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _disconnect,
+                child: const Text('Disconnect'),
+              ),
+              const SizedBox(height: 10),
             ],
           ),
         );

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_first_app/controllers/cache_controller.dart';
+import 'package:flutter_first_app/controllers/oauth_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -113,6 +114,9 @@ class GdController extends GetxController {
   }
 
   Future<List<Map<String, dynamic>>> listDriveFiles() async {
+    await cacheController.getGoogleAccess();
+
+    _accessToken = cacheController.googleAccess.value!.accessToken;
     final uri = Uri.parse(
       'https://www.googleapis.com/drive/v3/files?q=mimeType="application/json"&fields=files(id,name,mimeType)',
     );
@@ -128,6 +132,7 @@ class GdController extends GetxController {
       return files.cast<Map<String, dynamic>>();
     } else {
       print('Gagal mengambil daftar file: ${response.body}');
+      Get.snackbar('Error', 'Failed Restore Data');
       return [];
     }
   }

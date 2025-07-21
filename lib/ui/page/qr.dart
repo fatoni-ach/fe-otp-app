@@ -1,5 +1,7 @@
 // import 'dart:developer';
 
+// import 'dart:ui';
+
 import 'package:flutter/material.dart';
 // import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
@@ -57,8 +59,6 @@ class _QRViewPageState extends State<QRViewPage> {
       Get.find<QRController>().qrResult.value = scanData.code ?? '';
       String url = scanData.code ?? '';
       count++;
-
-      controller.dispose();
 
       Uri uri = Uri.parse(url);
 
