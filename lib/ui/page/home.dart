@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/controllers/auth_controller.dart';
+import 'package:flutter_first_app/controllers/auth_local_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/oauth_controller.dart';
 import 'package:flutter_first_app/controllers/qr_controller.dart';
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   final AuthController authController = Get.find<AuthController>();
   final CacheController cacheController = Get.find<CacheController>();
   final OAuthController oAuthController = Get.find<OAuthController>();
+  final authLocalController = Get.find<AuthLocalController>();
 
   final QRController qrController = Get.find<QRController>();
 

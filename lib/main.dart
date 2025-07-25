@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/application_controller.dart';
+import 'package:flutter_first_app/controllers/auth_local_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/gd_controller.dart';
 import 'package:flutter_first_app/controllers/oauth_controller.dart';
@@ -84,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Get.put(OAuthController());
         Get.put(QRController());
         Get.put(GdController());
+        Get.put(AuthLocalController());
       }),
       initialRoute: '/',
       getPages: [
