@@ -15,6 +15,7 @@ import 'package:flutter_first_app/ui/page/client/ListClientPage.dart';
 import 'package:flutter_first_app/ui/page/client/create.dart';
 import 'package:flutter_first_app/ui/page/client/edit.dart';
 import 'package:flutter_first_app/ui/page/auth/google_oauth.dart';
+import 'package:flutter_first_app/ui/page/v2/home_bak.dart';
 import 'package:flutter_first_app/ui/page/mykeys/create.dart';
 import 'package:flutter_first_app/ui/page/mykeys/edit.dart';
 import 'package:flutter_first_app/ui/page/mykeys/index.dart';
@@ -25,6 +26,8 @@ import 'package:flutter_first_app/ui/page/user/ListUsersPage.dart';
 import 'package:flutter_first_app/ui/page/user/create.dart';
 import 'package:flutter_first_app/ui/page/user/detail.dart';
 import 'package:flutter_first_app/ui/page/user/edit.dart';
+import 'package:flutter_first_app/ui/page/v2/settings/backup.dart';
+import 'package:flutter_first_app/ui/page/v2/settings/settings.dart';
 import 'package:get/get.dart';
 import 'ui/page/home.dart';
 import 'ui/page/profile.dart';
@@ -39,17 +42,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   title: 'Authenticator App',
-    //   theme: ThemeData(
-    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-    //   ),
-    //   home: const MyHomePage(title: 'Authenticator App'),
-    // );
-
     return MyHomePage(title: 'Authenticator App');
   }
 }
@@ -65,20 +59,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   AuthController authController = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Authenticator App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      // home: HomePage(),
-      // home: Obx(() {
-      //   // Cek status login dan arahkan ke halaman yang sesuai
-      //   if (authController.isLoggedIn.value) {
-      //     return const HomePage();
-      //   } else {
-      //     return const LoginPage();
-      //   }
-      // }), // ⬅️ Awal masuk ke LoginPage dulu
       initialBinding: BindingsBuilder(() {
         Get.put(ApplicationController());
         Get.put(CacheController());
@@ -91,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
       getPages: [
         GetPage(
           name: '/',
-          page: () => HomePage(),
+          page: () => HomeV2Page(),
           // middlewares: [AuthMiddleware()],
         ),
         GetPage(name: '/login', page: () => LoginPage()),
@@ -171,6 +157,16 @@ class _MyHomePageState extends State<MyHomePage> {
         GetPage(
           name: '/settings/backup',
           page: () => BackupPage(),
+          // middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/v2/settings',
+          page: () => SettingsV2Page(),
+          // middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/v2/settings/backup',
+          page: () => BackupV2Page(),
           // middlewares: [AuthMiddleware()],
         ),
       ],
