@@ -4,15 +4,18 @@ import 'dart:convert';
 import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
 import 'package:flutter_first_app/models/google_access.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:otp/otp.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:totp/totp.dart';
 import 'auth_controller.dart';
 
 class CacheController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   final ApplicationController appController = Get.find<ApplicationController>();
+  final _storage = FlutterSecureStorage();
+
   // final OAuthController oauthController = Get.put(OAuthController());
 
   var listApp = <Application>[].obs;
@@ -31,13 +34,15 @@ class CacheController extends GetxController {
   }
 
   Future<void> saveAppList(List<Application> apps) async {
-    final prefs = await SharedPreferences.getInstance();
+    // final prefs = await SharedPreferences.getInstance();
     final jsonString = encodeAppllicationList(apps);
-    await prefs.setString('application_list', jsonString);
+    // await prefs.setString('application_list', jsonString);
+
+    await _storage.write(key: 'application_list', value: jsonString);
   }
 
   Future<void> saveGoogleAccess(String accessToken, refreshToken) async {
-    final prefs = await SharedPreferences.getInstance();
+    // final prefs = await SharedPreferences.getInstance();
 
     final ga = GoogleAccess(
       accessToken: accessToken,
@@ -46,28 +51,35 @@ class CacheController extends GetxController {
     );
 
     final jsonString = jsonEncode(ga.toJson());
-    await prefs.setString('google_access', jsonString);
+    // await prefs.setString('google_access', jsonString);
+
+    await _storage.write(key: 'google_access', value: jsonString);
   }
 
   Future<void> removeGoogleAccess() async {
-    final prefs = await SharedPreferences.getInstance();
+    // final prefs = await SharedPreferences.getInstance();
 
     final ga = GoogleAccess(accessToken: '', refreshToken: '', isLogin: false);
 
     final jsonString = jsonEncode(ga.toJson());
-    await prefs.setString('google_access', jsonString);
+    // await prefs.setString('google_access', jsonString);
+
+    await _storage.write(key: 'google_access', value: jsonString);
   }
 
   Future<void> getGoogleAccess() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('google_access') ?? '{}';
+    // final prefs = await SharedPreferences.getInstance();
+    // final jsonString = prefs.getString('google_access') ?? '{}';
+    final jsonString = await _storage.read(key: 'google_access') ?? '{}';
 
     googleAccess.value = GoogleAccess.fromJson(json.decode(jsonString));
   }
 
   Future<void> loadAppList() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('application_list') ?? '[]';
+    // final storage = FlutterSecureStorage();
+    // final prefs = await SharedPreferences.getInstance();
+    final jsonString = await _storage.read(key: 'application_list') ?? '[]';
+    // final jsonString = prefs.getString('application_list') ?? '[]';
     final apps = decodeApplicationList(jsonString);
 
     List<Application> listTemp;
