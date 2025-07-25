@@ -134,6 +134,10 @@ class CacheController extends GetxController {
       alg = Algorithm.SHA512;
     }
 
+    if (algorithm == "SHA256") {
+      alg = Algorithm.SHA256;
+    }
+
     String totp = OTP.generateTOTPCodeString(
       secretKey,
       DateTime.now().millisecondsSinceEpoch,
