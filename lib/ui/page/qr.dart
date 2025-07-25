@@ -1,21 +1,14 @@
-// import 'dart:developer';
-
-// import 'dart:ui';
-
 import 'package:flutter/material.dart';
-// import 'package:flutter_first_app/controllers/application_controller.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/qr_controller.dart';
-// import 'package:flutter_first_app/controllers/qr_controller.dart';
-// import 'package:flutter_zxing/flutter_zxing.dart';
-// import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:get/get.dart';
-// import 'package:flutter_zxing/flutter_zxing.dart';
 
 class QRViewPage extends StatefulWidget {
+  const QRViewPage({super.key});
+
   @override
-  _QRViewPageState createState() => _QRViewPageState();
+  State<QRViewPage> createState() => _QRViewPageState();
 }
 
 class _QRViewPageState extends State<QRViewPage> {
