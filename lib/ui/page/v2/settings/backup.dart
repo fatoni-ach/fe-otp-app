@@ -7,6 +7,7 @@ import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/controllers/gd_controller.dart';
 import 'package:flutter_first_app/controllers/oauth_controller.dart';
 import 'package:flutter_first_app/models/Application.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 
@@ -45,32 +46,33 @@ class _BackupPageState extends State<BackupV2Page> {
   }
 
   Future<void> _connectToDrive() async {
-    await oAuthController.fetchUserInfo();
+    await oAuthController.login();
+    // await oAuthController.fetchUserInfo();
 
-    var profil = oAuthController.profil.value;
+    // var profil = oAuthController.profil.value;
 
-    if (profil == null || !profil.isLogin) {
-      await oAuthController.refreshAccessToken();
-      await oAuthController.fetchUserInfo();
-      profil = oAuthController.profil.value;
+    // if (profil == null || !profil.isLogin) {
+    //   await oAuthController.refreshAccessToken();
+    //   await oAuthController.fetchUserInfo();
+    //   profil = oAuthController.profil.value;
 
-      if (profil == null || !profil.isLogin) {
-        await oAuthController.logout();
-        final state = DateTime.now().millisecondsSinceEpoch.toString();
-        final authUrl = Uri.https('accounts.google.com', '/o/oauth2/v2/auth', {
-          'response_type': 'code',
-          'client_id': clientId,
-          'redirect_uri': redirectUri,
-          'scope': scopes,
-          'state': state,
-          'access_type': 'offline',
-          'prompt': 'consent',
-        });
+    //   if (profil == null || !profil.isLogin) {
+    //     await oAuthController.logout();
+    //     final state = DateTime.now().millisecondsSinceEpoch.toString();
+    //     final authUrl = Uri.https('accounts.google.com', '/o/oauth2/v2/auth', {
+    //       'response_type': 'code',
+    //       'client_id': clientId,
+    //       'redirect_uri': redirectUri,
+    //       'scope': scopes,
+    //       'state': state,
+    //       'access_type': 'offline',
+    //       'prompt': 'consent',
+    //     });
 
-        // Buka browser default
-        launchUrl(authUrl);
-      }
-    }
+    //     // Buka browser default
+    //     launchUrl(authUrl);
+    //   }
+    // }
   }
 
   Future<void> _backupData() async {
@@ -94,6 +96,7 @@ class _BackupPageState extends State<BackupV2Page> {
         listApp.addAll(cacheAppList);
 
         await cacheController.saveAppList(listApp);
+        await cacheController.loadAppList();
         Get.snackbar('Sukses', 'Data berhasil di restore');
         break;
       }
@@ -101,9 +104,8 @@ class _BackupPageState extends State<BackupV2Page> {
   }
 
   Future<void> _disconnect() async {
-    await oAuthController.logout();
-    await cacheController.saveGoogleAccess('', '');
-    await oAuthController.getProfileGoogle();
+    await oAuthController.signOut();
+    await oAuthController.fetchUserInfo();
   }
 
   @override
@@ -121,40 +123,84 @@ class _BackupPageState extends State<BackupV2Page> {
             child: Column(
               children: [
                 Image.asset('assets/google_drive.png', height: 80),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: _connectToDrive,
-                  child: const Text('Connect to drive'),
-                ),
                 const SizedBox(width: 20),
+                ElevatedButton.icon(
+                  onPressed: _connectToDrive,
+                  icon: Icon(
+                    Icons.keyboard_double_arrow_up_rounded,
+                  ), // Ganti dengan ikon sesuai kebutuhan
+                  label: Text('Connect to drive'), // Label teks
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black87,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    textStyle: TextStyle(fontSize: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
         }
 
-        // print("PROFIL : ${profil.name}");
         return Center(
           child: Column(
             children: [
               Image.asset('assets/google_drive.png', height: 80),
-              const SizedBox(height: 10),
-              Text(profil.email),
-              const SizedBox(height: 10),
-              ElevatedButton(
+              const SizedBox(height: 5),
+              Text(
+                profil.email,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
                 onPressed: _backupData,
-                child: const Text('Backup ke Drive'),
+                icon: Icon(
+                  Icons.backup_outlined,
+                ), // Ganti dengan ikon sesuai kebutuhan
+                label: Text('Backup ke Drive'), // Label teks
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black87,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  textStyle: TextStyle(fontSize: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
               const SizedBox(height: 10),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: _restoreData,
-                child: const Text('Restore dari Drive'),
+                icon: Icon(
+                  Icons.restore_outlined,
+                ), // Ganti dengan ikon sesuai kebutuhan
+                label: Text('Restore dari Drive'), // Label teks
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black87,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  textStyle: TextStyle(fontSize: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
               const SizedBox(height: 10),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: _disconnect,
-                child: const Text('Disconnect'),
+                icon: Icon(
+                  Iconsax.logout_copy,
+                ), // Ganti dengan ikon sesuai kebutuhan
+                label: Text('Disconnect'), // Label teks
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black87,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  textStyle: TextStyle(fontSize: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
-              const SizedBox(height: 10),
             ],
           ),
         );

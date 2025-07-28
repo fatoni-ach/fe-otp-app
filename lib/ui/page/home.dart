@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   final AuthController authController = Get.find<AuthController>();
   final CacheController cacheController = Get.find<CacheController>();
   final OAuthController oAuthController = Get.find<OAuthController>();
-  final authLocalController = Get.find<AuthLocalController>();
+  // final authLocalController = Get.find<AuthLocalController>();
 
   final QRController qrController = Get.find<QRController>();
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class SettingsV2Page extends StatefulWidget {
   const SettingsV2Page({super.key});
@@ -38,12 +39,12 @@ class _SettingState extends State<SettingsV2Page> {
         children: [
           // ElevatedButton(onPressed: null, child: Text('Backup data')),
           ListTile(
-            leading: const Icon(Icons.backup),
+            leading: const Icon(Icons.backup_outlined),
             title: const Text('Backup data'),
             onTap: () {
               // Get.back();
               // Get.toNamed("/my/keys");
-              Get.toNamed('settings/backup');
+              Get.toNamed('v2/settings/backup');
             },
           ),
         ],

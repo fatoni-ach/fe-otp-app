@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_first_app/controllers/cache_controller.dart';
 import 'package:flutter_first_app/models/profile.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -13,45 +14,34 @@ class OAuthController extends GetxController {
   final clientId = dotenv.env['GC_CLIENT_ID'] ?? '';
   final clientSecret = dotenv.env['GC_CLIENT_SECRET'] ?? '';
 
+  final List<String> scopes = [
+    'openid',
+    'email',
+    'profile',
+    'https://www.googleapis.com/auth/drive.file',
+  ];
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'openid',
+      'email',
+      'profile',
+      'https://www.googleapis.com/auth/drive.file',
+    ],
+  );
+
   CacheController cacheController = Get.find<CacheController>();
 
   var profil = Rxn<ProfileGoogle>();
   bool isLoading = true;
 
   Future<void> fetchUserInfo() async {
-    await cacheController.getGoogleAccess();
+    var account = _googleSignIn.currentUser;
 
-    var ga = cacheController.googleAccess.value;
+    ProfileGoogle temp;
 
-    if (ga == null || !ga.isLogin) {
-      return;
-    }
-
-    // await getProfileGoogle();
-
-    // var profilTemp = profil.value;
-
-    // if (profilTemp?.isLogin ?? false) {
-    //   return;
-    // }
-
-    final response = await http.get(
-      Uri.parse('https://www.googleapis.com/oauth2/v3/userinfo'),
-      headers: {'Authorization': 'Bearer ${ga.accessToken}'},
-    );
-
-    if (response.statusCode == 200) {
-      var temp = ProfileGoogle.fromJson(json.decode(response.body));
-      temp.isLogin = true;
-
-      await saveProfileGoogle(temp);
-
-      profil.value = temp;
-
-      isLoading = false;
-    }
-    if (response.statusCode == 401) {
-      var temp = ProfileGoogle(
+    if (account == null) {
+      temp = ProfileGoogle(
         sub: '',
         name: '',
         givenName: '',
@@ -61,11 +51,21 @@ class OAuthController extends GetxController {
         emailVerified: false,
         isLogin: false,
       );
-      await saveProfileGoogle(temp);
-      profil.value = temp;
     } else {
-      isLoading = false;
+      temp = ProfileGoogle(
+        sub: '',
+        name: account.displayName.toString(),
+        givenName: '',
+        familyName: '',
+        picture: account.photoUrl.toString(),
+        email: account.email.toString(),
+        emailVerified: true,
+        isLogin: true,
+      );
     }
+
+    await saveProfileGoogle(temp);
+    profil.value = temp;
   }
 
   Future<void> saveProfileGoogle(ProfileGoogle profile) async {
@@ -129,5 +129,38 @@ class OAuthController extends GetxController {
     } else {
       Get.snackbar('Error', 'Failed Re login');
     }
+  }
+
+  Future<void> login() async {
+    try {
+      final account = await _googleSignIn.signIn();
+      if (account != null) {
+        final GoogleSignInAuthentication auth = await account.authentication;
+
+        var prof = ProfileGoogle(
+          sub: '',
+          name: account.displayName.toString(),
+          givenName: '',
+          familyName: '',
+          picture: account.photoUrl.toString(),
+          email: account.email.toString(),
+          emailVerified: true,
+          isLogin: true,
+        );
+
+        await cacheController.saveGoogleAccess(auth.accessToken.toString(), '');
+        await saveProfileGoogle(prof);
+        profil.value = prof;
+      }
+    } catch (e) {
+      print('ERROR : ${e.toString()}');
+      Get.snackbar('Login Failed', e.toString());
+    }
+  }
+
+  Future<void> signOut() async {
+    await _googleSignIn.signOut();
+    await cacheController.removeGoogleAccess();
+    await logout();
   }
 }

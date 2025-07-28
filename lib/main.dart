@@ -29,13 +29,33 @@ import 'package:flutter_first_app/ui/page/user/edit.dart';
 import 'package:flutter_first_app/ui/page/v2/settings/backup.dart';
 import 'package:flutter_first_app/ui/page/v2/settings/settings.dart';
 import 'package:get/get.dart';
-import 'ui/page/home.dart';
+// import 'ui/page/home.dart';
 import 'ui/page/profile.dart';
 import 'ui/page/login.dart';
 import 'controllers/auth_controller.dart';
 
 void main() async {
   await dotenv.load(fileName: '.env');
+
+  // WidgetsFlutterBinding.ensureInitialized();
+  // Get.put(AuthController());
+  // Get.put(ApplicationController());
+  // Get.put(CacheController());
+
+  // final oauthController = Get.put(OAuthController());
+
+  // final appLinks = AppLinks();
+  // final initialUri = await appLinks.getInitialLink();
+  // if (initialUri != null) {
+  //   await oauthController.handleRedirect(initialUri);
+  // }
+
+  // appLinks.uriLinkStream.listen((uri) {
+  //   if (uri != null) {
+  //     print('URI : ${uri.path}');
+  //     oauthController.handleRedirect(uri);
+  //   }
+  // });
   runApp(const MyApp());
 }
 
